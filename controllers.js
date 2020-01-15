@@ -14,7 +14,7 @@ module.exports = {
       })
       .then(data => {
         if (!data) {
-          return res.status(404).send('invalid user');
+          return res.status(404).send("invalid user");
         }
         session.userid = data.id;
         res.status(200).json({
@@ -25,7 +25,6 @@ module.exports = {
         res.status(404).send(err);
       });
   },
-
 
   logOutController: (req, res) => {
     // TODO : 로그인 및 인증 부여 로직 작성
@@ -83,42 +82,44 @@ module.exports = {
 
   myPageContoroller: (req, res) => {
     // TODO : 유저 회원정보 요청 로직 작성 //상훈
-        // TODO : 유저 회원정보 요청 로직 작성
-        const session = req.session;
-        User.findOne({ where: { id: session.userid } })
-          .then(userData => {
-            Todo.count({ where: { todoid: session.userid } }).then(todoCount => {
-              Todo.count({
-                where: { todoid: session.userid, status: "complete" }
-              }).then(completeCount => {
-                let data = {
-                  userinfo: userData,
-                  todoCount: todoCount,
-                  completeCount: completeCount
-                };
-                res.status(200).json(data);
-              });
-            });
-          })
-          .catch(err => {
-            console.log(err);
-            res.sendStatus(500);
+    // TODO : 유저 회원정보 요청 로직 작성
+    const session = req.session;
+    User.findOne({ where: { id: session.userid } })
+      .then(userData => {
+        Todo.count({ where: { todoid: session.userid } }).then(todoCount => {
+          Todo.count({
+            where: { todoid: session.userid, status: "complete" }
+          }).then(completeCount => {
+            let data = {
+              userinfo: userData,
+              todoCount: todoCount,
+              completeCount: completeCount
+            };
+            res.status(200).json(data);
           });
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+      });
   },
 
   todoEdit: (req, res, next) => {
     //TODO: todo 변경 //엄
     const { todoid, todoitem } = req.body;
-    Todo.update({
-      todoid: todoid,
-      todiitem: todoitem,
-      status: "incomplete"
-    },
-    {where : req.params.userid})
-    .then(function(rowsUpdated) {
-      res.json(rowsUpdated)
-    })
-    .catch(next)
+    Todo.update(
+      {
+        todoid: todoid,
+        todiitem: todoitem,
+        status: "incomplete"
+      },
+      { where: req.params.userid }
+    )
+      .then(function(rowsUpdated) {
+        res.json(rowsUpdated);
+      })
+      .catch(next);
   },
   // Book.update(
   //   {title: req.body.title},
