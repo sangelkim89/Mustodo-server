@@ -2,7 +2,31 @@ const { Todo, User } = require("./models");
 module.exports = {
   logInController: (req, res) => {
     // TODO : 로그인 및 인증 부여 로직 작성
+    const { email, password } = req.body;
+    const session = req.session;
+
+    user
+      .findOne({
+        where: {
+          email: email,
+          password: password
+        }
+      })
+      .then(data => {
+        if (!data) {
+          return res.status(404).send('invalid user');
+        }
+        session.userid = data.id;
+        res.status(200).json({
+          id: data.id
+        });
+      })
+      .catch(err => {
+        res.status(404).send(err);
+      });
   },
+
+
   logOutController: (req, res) => {
     // TODO : 로그인 및 인증 부여 로직 작성
     const { session } = req;
@@ -19,10 +43,10 @@ module.exports = {
       res.redirect("/");
     }
   },
+
   signUpController: (req, res) => {
     // TODO : 회원가입 로직 및 유저 생성 로직 작성
     const { username, email, password } = req.body;
-
     User.findOrCreate({
       where: {
         username: username,
@@ -41,6 +65,7 @@ module.exports = {
         res.sendStatus(500);
       });
   },
+
   todoPageContoroller: (req, res) => {
     // TODO : 유저 todolist 요청
     const session = req.session;
@@ -55,29 +80,55 @@ module.exports = {
         });
     }
   },
+
   myPageContoroller: (req, res) => {
-    // TODO : 유저 회원정보 요청 로직 작성
-    const session = req.session;
-    User.findOne({ where: { id: session.userid } })
-      .then(userData => {
-        Todo.count({ where: { todoid: session.userid } }).then(todoCount => {
-          Todo.count({
-            where: { todoid: session.userid, status: "complete" }
-          }).then(completeCount => {
-            let data = {
-              userinfo: userData,
-              todoCount: todoCount,
-              completeCount: completeCount
-            };
-            res.status(200).json(data);
+    // TODO : 유저 회원정보 요청 로직 작성 //상훈
+        // TODO : 유저 회원정보 요청 로직 작성
+        const session = req.session;
+        User.findOne({ where: { id: session.userid } })
+          .then(userData => {
+            Todo.count({ where: { todoid: session.userid } }).then(todoCount => {
+              Todo.count({
+                where: { todoid: session.userid, status: "complete" }
+              }).then(completeCount => {
+                let data = {
+                  userinfo: userData,
+                  todoCount: todoCount,
+                  completeCount: completeCount
+                };
+                res.status(200).json(data);
+              });
+            });
+          })
+          .catch(err => {
+            console.log(err);
+            res.sendStatus(500);
           });
-        });
-      })
-      .catch(err => {
-        console.log(err);
-        res.sendStatus(500);
-      });
   },
+
+  todoEdit: (req, res, next) => {
+    //TODO: todo 변경 //엄
+    const { todoid, todoitem } = req.body;
+    Todo.update({
+      todoid: todoid,
+      todiitem: todoitem,
+      status: "incomplete"
+    },
+    {where : req.params.userid})
+    .then(function(rowsUpdated) {
+      res.json(rowsUpdated)
+    })
+    .catch(next)
+  },
+  // Book.update(
+  //   {title: req.body.title},
+  //   {where: req.params.bookId}
+  // )
+  // .then(function(rowsUpdated) {
+  //   res.json(rowsUpdated)
+  // })
+  // .catch(next)
+
   todoAdd: (req, res) => {
     //TODO: todo 추가
     const { todoid, todoitem } = req.body;
@@ -88,9 +139,6 @@ module.exports = {
     }).then(el => {
       res.status(200).send("created");
     });
-  },
-  todoEdit: (req, res) => {
-    //TODO: todo 변경
   },
   todoDelete: (req, res) => {
     //TODO: todo삭제
@@ -104,5 +152,4 @@ module.exports = {
         console.error(err);
       });
   }
-  //
 };
