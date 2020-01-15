@@ -5,7 +5,16 @@ const session = require('express-session');
 const cors = require('cors');
 const app = express();
 const port = 4000;
-const {logInController,logOutController, signUpController,myPageController,todoPageController} = require('./controllers')
+const {
+  logInController,
+  logOutController,
+  signUpController,
+  myPageController,
+  todoPageController,
+  todoAdd,
+  todoEdit,
+  todoDelete
+} = require("./controllers");
 
 app.use(
   session({
@@ -35,12 +44,17 @@ app.get('/user', ()=>{
  console.log("helloworld")
 });
 
-/*
+
 app.post('/user/login', logInController);
+
+/*
 app.post('/user/signup', signUpController);
 app.get('/user/logout', logOutController);
 app.get('/user/mypage', myPageController);
 app.get('/user/todopage', todoPageController);
+app.post('/todo/add', todoAdd);
+app.put('/todo/edit', todoEdit);
+app.delete('/todo/delete', todoDelete);
 */
 
 app.listen(port, () => {
