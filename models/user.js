@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use strict";
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
@@ -13,4 +14,24 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
   };
   return User;
+=======
+'use strict';
+
+module.exports = (sequelize, DataTypes) => {
+	const User = sequelize.define(
+		'User',
+		{
+			username: DataTypes.STRING,
+			email: DataTypes.STRING,
+			password: DataTypes.STRING
+		},
+		{}
+	);
+	User.associate = function(models) {
+		// associations can be defined here
+
+		User.hasMany(models.Todo);
+	};
+	return User;
+>>>>>>> ff75f174ca709fa19964dca985490a0ca13f1011
 };
