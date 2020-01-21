@@ -12,12 +12,12 @@ const {
   myPageController,
   todoPageController,
   todoAdd,
-  todoEdit,
+  todoInfo,
   todoDelete,
+  todoStatusEdit,
   myPageUserInfoEdit,
   calendarController
 } = require("./controllers");
-
 app.use(
   session({
     secret: "secret",
@@ -40,20 +40,17 @@ app.use(
     credentials: true
   })
 );
-//코어스를 사용하는 형식
-
-// app.get("/user", () => {
-//   console.log("helloworld");
-// });
+// 코어스를 사용하는 형식
 
 app.post("/user/login", logInController);
 app.post("/user/signup", signUpController);
 app.get("/user/logout", logOutController);
-app.put("/todo/edit", todoEdit);
-app.delete("/todo/delete", todoDelete);
 app.get("/user/mypage", myPageController);
 app.get("/user/todopage", todoPageController);
 app.post("/todo/add", todoAdd);
+app.post("/todo/info", todoInfo);
+app.post("/todo/status", todoStatusEdit);
+app.delete("/todo/delete", todoDelete);
 app.put("/user/edit", myPageUserInfoEdit);
 app.post("/calendar", calendarController);
 
