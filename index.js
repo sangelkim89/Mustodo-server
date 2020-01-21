@@ -16,7 +16,8 @@ const {
 	todoDelete,
 	todoStatusEdit,
 	myPageUserInfoEdit,
-	calendarController
+	calendarController,
+	todoPagePlusController
 } = require('./controllers');
 app.use(
 	session({
@@ -50,9 +51,10 @@ app.get('/user/todopage', todoPageController);
 app.post('/todo/add', todoAdd);
 app.post('/todo/info', todoInfo);
 app.post('/todo/status', todoStatusEdit);
-app.delete('/todo/delete', todoDelete);
+app.post('/todo/delete', todoDelete);
 app.put('/user/edit', myPageUserInfoEdit);
 app.post('/calendar', calendarController);
+app.post('/user/getid', todoPagePlusController);
 
 app.listen(port, () => {
 	console.log(`server listen on ${port}`);
