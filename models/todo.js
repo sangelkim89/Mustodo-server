@@ -1,25 +1,27 @@
 "use strict";
 
 module.exports = (sequelize, DataTypes) => {
-  const Todo = sequelize.define(
-    "Todo",
-    {
-      todoid: {
-        type: Sequelize.INTEGER,
-        references: "User", // <<< Note, its table's name, not object name
-        referencesKey: "id" // <<< Note, its a column name
-      },
 
-      todoitem: DataTypes.STRING,
-      status: DataTypes.STRING
-    },
-    {}
-  );
-  Todo.associate = function(models) {
-    // associations can be defined here
-    Todo.belongsTo(models.User, {
-      foreignKey: "id"
-    });
-  };
-  return Todo;
+	const Todo = sequelize.define(
+		'Todo',
+		{
+			userid: DataTypes.NUMBER,
+			todoid: DataTypes.NUMBER,
+			todoitem: DataTypes.STRING,
+			status: DataTypes.BOOLEAN
+		},
+		{}
+	);
+	Todo.associate = function(models) {
+		// associations can be defined here
+		models.Todo.belongsTo(models.User, {
+			onDelete: 'CASCADE',
+			foreignKey: {
+				allowNull: false,
+				defaultValue: 1
+			}
+		});
+	};
+	return Todo;
+
 };
