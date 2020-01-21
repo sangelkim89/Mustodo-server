@@ -13,7 +13,9 @@ const {
   todoPageController,
   todoAdd,
   todoEdit,
-  todoDelete
+  todoDelete,
+  myPageUserInfoEdit,
+  calendarController
 } = require("./controllers");
 
 app.use(
@@ -34,7 +36,7 @@ app.use(morgan("dev"));
 app.use(
   cors({
     origin: ["http://localhost:3000"],
-    method: ["GET", "POST", "PUT", "DELETE"],
+    method: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true
   })
 );
@@ -52,6 +54,8 @@ app.delete("/todo/delete", todoDelete);
 app.get("/user/mypage", myPageController);
 app.get("/user/todopage", todoPageController);
 app.post("/todo/add", todoAdd);
+app.put("/user/edit", myPageUserInfoEdit);
+app.post("/calendar", calendarController);
 
 app.listen(port, () => {
   console.log(`server listen on ${port}`);

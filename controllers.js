@@ -1,17 +1,17 @@
 const { Todo, User } = require("./models");
+const { Op } = require("sequelize");
 module.exports = {
   logInController: (req, res) => {
     // TODO : 로그인 및 인증 부여 로직 작성
     const { email, password } = req.body;
     const session = req.session;
 
-    user
-      .findOne({
-        where: {
-          email: email,
-          password: password
-        }
-      })
+    User.findOne({
+      where: {
+        email: email,
+        password: password
+      }
+    })
       .then(data => {
         if (!data) {
           return res.status(404).send("invalid user");
@@ -46,6 +46,7 @@ module.exports = {
   signUpController: (req, res) => {
     // TODO : 회원가입 로직 및 유저 생성 로직 작성
     const { username, email, password } = req.body;
+    console.log("signup reached!");
     User.findOrCreate({
       where: {
         username: username,
@@ -55,7 +56,7 @@ module.exports = {
     })
       .then(async ([user, created]) => {
         if (!created) {
-          return res.status(409).send("email exists");
+          return res.status(409).send("user already exists");
         }
         return res.status(201).send(user);
       })
@@ -65,7 +66,7 @@ module.exports = {
       });
   },
 
-  todoPageContoroller: (req, res) => {
+  todoPageController: (req, res) => {
     // TODO : 유저 todolist 요청
     const session = req.session;
     if (session.userid) {
@@ -80,7 +81,7 @@ module.exports = {
     }
   },
 
-  myPageContoroller: (req, res) => {
+  myPageController: (req, res) => {
     // TODO : 유저 회원정보 요청 로직 작성 //상훈
     // TODO : 유저 회원정보 요청 로직 작성
     const session = req.session;
@@ -151,6 +152,58 @@ module.exports = {
       })
       .catch(err => {
         console.error(err);
+      });
+  },
+  myPageUserInfoEdit: (req, res) => {
+    let id = req.session.userid;
+    const { username, email, password } = req.body;
+    console.log("myPageUserInfoEdit reached!");
+    if (username) {
+      User.update({ username: username }, { where: { id: id } })
+        .then(res => {
+          res.status(200).send("username info updated!");
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else if (email) {
+      User.update({ email: email }, { where: { id: id } })
+        .then(res => {
+          res.status(200).send("email info updated!");
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else if (password) {
+      User.update({ password: password }, { where: { id: id } })
+        .then(res => {
+          res.status(200).send("password info updated!");
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  },
+  calendarController: (req, res) => {
+    console.log("reqbody is: ", req.body);
+    const { createdAt } = req.body;
+    console.log("createdAt is: ", createdAt);
+    Todo.findAll({
+      attributes: [
+        "id",
+        "todoid",
+        "todoitem",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      where: { createdAt: { [Op.startsWith]: createdAt } }
+    })
+      .then(datas => {
+        res.json(datas);
+      })
+      .catch(err => {
+        console.log(err);
       });
   }
 };
