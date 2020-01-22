@@ -36,7 +36,7 @@ app.use(morgan("dev"));
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://mustodo-first-project.s3-website.us-east-2.amazonaws.com"],
     method: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true
   })
