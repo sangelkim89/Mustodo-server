@@ -32,6 +32,7 @@ module.exports = {
     // app.get('/user/logout', logOutController);
 
     const { session } = req;
+
     if (session.userid) {
       session.destroy(err => {
         if (err) {
@@ -177,7 +178,7 @@ module.exports = {
     const { todoid, status } = req.body;
 
     Todo.update({ status: status }, { where: { todoid: todoid } })
-      .then(res => {
+      .then(result => {
         res.status(200).send("info status  update!");
       })
       .catch(err => {
@@ -218,9 +219,10 @@ module.exports = {
   calendarController: (req, res) => {
     //app.post('/calendar', calendarController);
 
-    console.log("reqbody is: ", req.body);
+    const session = req.session;
+
     const { createdAt } = req.body;
-    console.log("createdAt is: ", createdAt);
+
     Todo.findAll({
       attributes: [
         "userid",
@@ -230,7 +232,10 @@ module.exports = {
         "createdAt",
         "updatedAt"
       ],
-      where: { createdAt: { [Op.startsWith]: createdAt } }
+      where: {
+        createdAt: { [Op.startsWith]: createdAt },
+        userid: session.userid
+      }
     })
       .then(datas => {
         res.json(datas);
