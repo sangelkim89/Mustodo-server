@@ -8,24 +8,25 @@ module.exports = {
 				primaryKey: true,
 				type: Sequelize.INTEGER
 			},
+			userid: {
+				type: Sequelize.STRING
+			},
 			todoid: {
-				type: Sequelize.INTEGER
+				type: Sequelize.STRING
 			},
 			todoitem: {
 				type: Sequelize.STRING
 			},
 			status: {
-				type: Sequelize.STRING
+				type: Sequelize.BOOLEAN
 			},
 			createdAt: {
 				allowNull: false,
-				type: Sequelize.DATE,
-				defaultValue: new Date()
+				type: Sequelize.DATE
 			},
 			updatedAt: {
 				allowNull: false,
-				type: Sequelize.DATE,
-				defaultValue: new Date()
+				type: Sequelize.DATE
 			}
 		});
 	},
